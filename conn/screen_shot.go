@@ -14,7 +14,9 @@ import (
 func Handle_error(err error, message string) {
 	if err != nil {
 		fmt.Printf("[*] ERROR OCCURED: %s", message)
-		os.Exit(1)
+		// os.Exit(1)
+
+		panic(err)
 	}
 }
 
@@ -41,18 +43,18 @@ func Take_screenshot() []string {
 			fmt.Println(fileName)
 
 			screen_shots = append(screen_shots, fileName)
-			file, _ := os.Create(fileName)
+			file, err := os.Create(fileName)
+			Handle_error(err, "Couldn't create file")
 			defer file.Close()
 			png.Encode(file, image)
 
 		case "windows":
 
-			fileName := fmt.Sprintf("%temp%\\d_%d_%d:%d:%d.png", month, day, time.Now().Hour(), time.Now().Minute(), time.Now().Second())
-
-			fmt.Println(fileName)
+			fileName := fmt.Sprintf("%s\\%d@%d@%d %d %d.png", os.TempDir(), month, day, time.Now().Hour(), time.Now().Minute(), time.Now().Second())
 
 			screen_shots = append(screen_shots, fileName)
-			file, _ := os.Create(fileName)
+			file, err := os.Create(fileName)
+			Handle_error(err, "Couldn't create file")
 			defer file.Close()
 			png.Encode(file, image)
 
